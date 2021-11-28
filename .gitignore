@@ -47,6 +47,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# VSCODE
-
+# Vscode IDE
 .vscode
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
