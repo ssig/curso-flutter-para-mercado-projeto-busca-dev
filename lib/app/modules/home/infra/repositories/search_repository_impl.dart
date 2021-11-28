@@ -1,6 +1,8 @@
-import '../../domain/entities/result_entity.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../domain/repositories/search_repository.dart';
 import '../datasource/search_datasource.dart';
+import '../models/result_model.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final SearchDataSource _searchDataSource;
@@ -9,7 +11,8 @@ class SearchRepositoryImpl implements SearchRepository {
       : _searchDataSource = searchDataSource;
 
   @override
-  Future<List<ResultEntity>> searchByUser({required String query}) async {
+  Future<Either<Exception, List<ResultModel>>> searchByUser(
+      {required String query}) async {
     return await _searchDataSource.searchByUser(query: query);
   }
 }

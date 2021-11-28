@@ -1,5 +1,8 @@
-import '../entities/result_entity.dart';
+import 'package:dartz/dartz.dart';
+
+import '../../infra/models/result_model.dart';
 
 abstract class SearchRepository {
-  Future<List<ResultEntity>> searchByUser({required String query});
+  Future<Either<Exception, List<ResultModel>>> searchByUser(
+      {required String query});
 }

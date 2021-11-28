@@ -1,7 +1,9 @@
 import 'package:mobx/mobx.dart';
 
+import '../../../../core/failures/failure.dart';
 import '../domain/entities/result_entity.dart';
 import '../domain/usecases/by_user_search_usecase.dart';
+import 'states/search_state.dart';
 
 part 'home_controller.g.dart';
 
@@ -14,15 +16,21 @@ abstract class HomeControllerBase with Store {
       : _searchUseCase = searchUseCase;
 
   @observable
-  bool loading = false;
-
-  @observable
-  List<ResultEntity> searchFound = [];
+  SearchState searchState = SearchStateInitial();
 
   @action
   Future search(String query) async {
-    loading = true;
-    searchFound = await _searchUseCase.call(query);
-    loading = false;
+    searchState = SearchStateLoading();
+    final response = await _searchUseCase.call(query);
+    response.fold(
+      (Failure failure) => searchState =
+          SearchStateGetFailure(message: mapFailureToMessage(failure)),
+      (List<ResultEntity> resultEntityList) => searchState =
+          SearchStateGetSuccess(resultEntityList: resultEntityList),
+    );
+  }
+
+  String mapFailureToMessage(Failure failure) {
+    return failure.message;
   }
 }

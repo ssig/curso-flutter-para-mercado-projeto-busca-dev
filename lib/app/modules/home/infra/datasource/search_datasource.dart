@@ -1,5 +1,8 @@
+import 'package:dartz/dartz.dart';
+
 import '../models/result_model.dart';
 
 abstract class SearchDataSource {
-  Future<List<ResultModel>> searchByUser({required String query});
+  Future<Either<Exception, List<ResultModel>>> searchByUser(
+      {required String query});
 }
