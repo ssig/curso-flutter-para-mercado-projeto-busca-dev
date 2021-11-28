@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../domain/entities/result_entity.dart';
@@ -13,9 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends ModularState<HomePage, HomeController> {
-  bool loading = false;
-  List<ResultEntity> searchFound = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,59 +32,56 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
             ),
           ),
           onChanged: (String query) {
-            setState(() {
-              loading = true;
-            });
-            Future.delayed(Duration.zero, () async {
-              searchFound = await controller.search(query);
-              setState(() {
-                loading = false;
-              });
-            });
+            controller.search(query);
           },
         ),
       ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: const EdgeInsets.only(top: 12, bottom: 8),
-              itemCount: searchFound.length,
-              separatorBuilder: (_, __) => const Divider(color: Colors.blue),
-              itemBuilder: (_, index) {
-                ResultEntity resultEntity = searchFound[index];
-                return ListTile(
-                  leading: resultEntity.avatarUrl != null
-                      ? Image.network(resultEntity.avatarUrl!)
-                      : Container(color: Colors.grey),
-                  title: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        resultEntity.login ?? '-',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      TextButton(
-                        style: ButtonStyle(
-                          alignment: Alignment.centerLeft,
-                          padding: MaterialStateProperty.all(
-                            const EdgeInsets.all(0),
+      body: Observer(
+        builder: (_) {
+          return controller.loading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.separated(
+                  padding: const EdgeInsets.only(top: 12, bottom: 8),
+                  itemCount: controller.searchFound.length,
+                  separatorBuilder: (_, __) =>
+                      const Divider(color: Colors.blue),
+                  itemBuilder: (_, index) {
+                    ResultEntity resultEntity = controller.searchFound[index];
+                    return ListTile(
+                      leading: resultEntity.avatarUrl != null
+                          ? Image.network(resultEntity.avatarUrl!)
+                          : Container(color: Colors.grey),
+                      title: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            resultEntity.login ?? '-',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          'Ver detalhes',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        onPressed: () {},
+                          TextButton(
+                            style: ButtonStyle(
+                              alignment: Alignment.centerLeft,
+                              padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0),
+                              ),
+                            ),
+                            child: const Text(
+                              'Ver detalhes',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            onPressed: () {},
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
-              },
-            ),
+        },
+      ),
     );
   }
 }

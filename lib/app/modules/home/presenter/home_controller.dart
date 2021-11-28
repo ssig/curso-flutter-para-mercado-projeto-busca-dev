@@ -13,8 +13,16 @@ abstract class HomeControllerBase with Store {
   HomeControllerBase({required SearchByUserUseCase searchUseCase})
       : _searchUseCase = searchUseCase;
 
+  @observable
+  bool loading = false;
+
+  @observable
+  List<ResultEntity> searchFound = [];
+
   @action
-  Future<List<ResultEntity>> search(String query) async {
-    return await _searchUseCase.call(query);
+  Future search(String query) async {
+    loading = true;
+    searchFound = await _searchUseCase.call(query);
+    loading = false;
   }
 }
