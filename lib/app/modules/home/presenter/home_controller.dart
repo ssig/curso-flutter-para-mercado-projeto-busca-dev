@@ -16,17 +16,22 @@ abstract class HomeControllerBase with Store {
       : _searchUseCase = searchUseCase;
 
   @observable
-  SearchState searchState = SearchStateInitial();
+  SearchState searchState = SearchState.initial();
 
   @action
   Future search(String query) async {
-    searchState = SearchStateLoading();
+    searchState = SearchState.loading();
+
+    if (query.isEmpty) {
+      return searchState = SearchState.initial();
+    }
+
     final response = await _searchUseCase.call(query);
     response.fold(
       (Failure failure) => searchState =
-          SearchStateGetFailure(message: mapFailureToMessage(failure)),
+          SearchState.searchFailure(message: mapFailureToMessage(failure)),
       (List<ResultEntity> resultEntityList) => searchState =
-          SearchStateGetSuccess(resultEntityList: resultEntityList),
+          SearchState.searchSuccess(resultEntityList: resultEntityList),
     );
   }
 

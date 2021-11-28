@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../domain/entities/result_entity.dart';
 import 'home_controller.dart';
-import 'states/search_state.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -39,67 +39,121 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       ),
       body: Observer(
         builder: (_) {
-          if (controller.searchState is SearchStateLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          Widget widgetView = const SizedBox.shrink();
 
-          if (controller.searchState is SearchStateGetSuccess) {
-            SearchStateGetSuccess state =
-                controller.searchState as SearchStateGetSuccess;
-            List<ResultEntity> searchFound = state.resultEntityList;
-            return ListView.separated(
-              padding: const EdgeInsets.only(top: 12, bottom: 8),
-              itemCount: searchFound.length,
-              separatorBuilder: (_, __) => const Divider(color: Colors.blue),
-              itemBuilder: (_, index) {
-                ResultEntity resultEntity = searchFound[index];
-                return ListTile(
-                  leading: resultEntity.avatarUrl != null
-                      ? Image.network(resultEntity.avatarUrl!)
-                      : Container(color: Colors.grey),
-                  title: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        resultEntity.login ?? '-',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
+          controller.searchState.when(
+            initial: () => widgetView = const Center(
+              child: Icon(
+                Icons.person_search,
+                size: 68,
+                color: Colors.grey,
+              ),
+            ),
+            loading: () => widgetView = Padding(
+              padding: const EdgeInsets.all(16),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                enabled: true,
+                child: ListView.builder(
+                  itemCount: 6,
+                  itemBuilder: (_, __) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width: 48.0,
+                            height: 48.0,
+                            color: Colors.white,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  height: 8.0,
+                                  color: Colors.white,
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 2.0),
+                                ),
+                                Container(
+                                  height: 8.0,
+                                  color: Colors.white,
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 2.0),
+                                ),
+                                Container(
+                                  width: 40.0,
+                                  height: 8.0,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                      TextButton(
-                        style: ButtonStyle(
-                          alignment: Alignment.centerLeft,
-                          padding: MaterialStateProperty.all(
-                            const EdgeInsets.all(0),
+                    );
+                  },
+                ),
+              ),
+            ),
+            searchSuccess: (List<ResultEntity> resultEntityList) {
+              widgetView = ListView.separated(
+                padding: const EdgeInsets.only(top: 12, bottom: 8),
+                itemCount: resultEntityList.length,
+                separatorBuilder: (_, __) => const Divider(color: Colors.blue),
+                itemBuilder: (_, index) {
+                  ResultEntity resultEntity = resultEntityList[index];
+                  return ListTile(
+                    leading: resultEntity.avatarUrl != null
+                        ? Image.network(resultEntity.avatarUrl!)
+                        : Container(color: Colors.grey),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          resultEntity.login ?? '-',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
                           ),
                         ),
-                        child: const Text(
-                          'Ver detalhes',
-                          style: TextStyle(fontSize: 14),
+                        TextButton(
+                          style: ButtonStyle(
+                            alignment: Alignment.centerLeft,
+                            padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0),
+                            ),
+                          ),
+                          child: const Text(
+                            'Ver detalhes',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          onPressed: () {},
                         ),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          }
-
-          if (controller.searchState is SearchStateGetFailure) {
-            SearchStateGetFailure state =
-                controller.searchState as SearchStateGetFailure;
-            return Center(
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            searchFailure: (String message) => widgetView = Center(
               child: Text(
-                state.message,
+                message,
                 style: const TextStyle(color: Colors.red),
               ),
-            );
-          }
+            ),
+          );
 
-          return const SizedBox.shrink();
+          return widgetView;
         },
       ),
     );

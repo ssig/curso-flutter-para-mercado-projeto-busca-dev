@@ -1,7 +1,13 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../domain/entities/result_entity.dart';
 
-class ResultModel extends ResultEntity {
-  ResultModel({
+part 'result_model.freezed.dart';
+part 'result_model.g.dart';
+
+@freezed
+class ResultModel extends ResultEntity with _$ResultModel {
+  factory ResultModel({
     int? id,
     String? login,
     String? nodeId,
@@ -19,115 +25,10 @@ class ResultModel extends ResultEntity {
     String? eventsUrl,
     String? receivedEventsUrl,
     String? type,
-    bool? siteAdmin,
     int? score,
-  }) : super(
-          id: id,
-          login: login,
-          nodeId: nodeId,
-          avatarUrl: avatarUrl,
-          gravatarId: gravatarId,
-          url: url,
-          htmlUrl: htmlUrl,
-          followersUrl: followersUrl,
-          followingUrl: followingUrl,
-          gistsUrl: gistsUrl,
-          starredUrl: starredUrl,
-          subscriptionsUrl: subscriptionsUrl,
-          organizationsUrl: organizationsUrl,
-          reposUrl: reposUrl,
-          eventsUrl: eventsUrl,
-          receivedEventsUrl: receivedEventsUrl,
-          type: type,
-          siteAdmin: siteAdmin,
-          score: score,
-        );
-
-  factory ResultModel.fromJson(Map<String, dynamic> json) => ResultModel(
-        login: json['login'] as String?,
-        id: json['id'] as int?,
-        nodeId: json['node_id'] as String?,
-        avatarUrl: json['avatar_url'] as String?,
-        gravatarId: json['gravatar_id'] as String?,
-        url: json['url'] as String?,
-        htmlUrl: json['html_url'] as String?,
-        followersUrl: json['followers_url'] as String?,
-        followingUrl: json['following_url'] as String?,
-        gistsUrl: json['gists_url'] as String?,
-        starredUrl: json['starred_url'] as String?,
-        subscriptionsUrl: json['subscriptions_url'] as String?,
-        organizationsUrl: json['organizations_url'] as String?,
-        reposUrl: json['repos_url'] as String?,
-        eventsUrl: json['events_url'] as String?,
-        receivedEventsUrl: json['received_events_url'] as String?,
-        type: json['type'] as String?,
-        siteAdmin: json['site_admin'] as bool?,
-        score: json['score'] as int?,
-      );
-
-  Map<String, dynamic> toJson() => {
-        'login': login,
-        'id': id,
-        'node_id': nodeId,
-        'avatar_url': avatarUrl,
-        'gravatar_id': gravatarId,
-        'url': url,
-        'html_url': htmlUrl,
-        'followers_url': followersUrl,
-        'following_url': followingUrl,
-        'gists_url': gistsUrl,
-        'starred_url': starredUrl,
-        'subscriptions_url': subscriptionsUrl,
-        'organizations_url': organizationsUrl,
-        'repos_url': reposUrl,
-        'events_url': eventsUrl,
-        'received_events_url': receivedEventsUrl,
-        'type': type,
-        'site_admin': siteAdmin,
-        'score': score,
-      };
-
-  ResultModel copyWith({
-    String? login,
-    int? id,
-    String? nodeId,
-    String? avatarUrl,
-    String? gravatarId,
-    String? url,
-    String? htmlUrl,
-    String? followersUrl,
-    String? followingUrl,
-    String? gistsUrl,
-    String? starredUrl,
-    String? subscriptionsUrl,
-    String? organizationsUrl,
-    String? reposUrl,
-    String? eventsUrl,
-    String? receivedEventsUrl,
-    String? type,
     bool? siteAdmin,
-    int? score,
-  }) {
-    return ResultModel(
-      login: login ?? this.login,
-      id: id ?? this.id,
-      nodeId: nodeId ?? this.nodeId,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      gravatarId: gravatarId ?? this.gravatarId,
-      url: url ?? this.url,
-      htmlUrl: htmlUrl ?? this.htmlUrl,
-      followersUrl: followersUrl ?? this.followersUrl,
-      followingUrl: followingUrl ?? this.followingUrl,
-      gistsUrl: gistsUrl ?? this.gistsUrl,
-      starredUrl: starredUrl ?? this.starredUrl,
-      subscriptionsUrl: subscriptionsUrl ?? this.subscriptionsUrl,
-      organizationsUrl: organizationsUrl ?? this.organizationsUrl,
-      reposUrl: reposUrl ?? this.reposUrl,
-      eventsUrl: eventsUrl ?? this.eventsUrl,
-      receivedEventsUrl: receivedEventsUrl ?? this.receivedEventsUrl,
-      type: type ?? this.type,
-      siteAdmin: siteAdmin ?? this.siteAdmin,
-      score: score ?? this.score,
-    );
-  }
+  }) = _ResultModel;
+
+  factory ResultModel.fromJson(Map<String, dynamic> json) =>
+      _$ResultModelFromJson(json);
 }
