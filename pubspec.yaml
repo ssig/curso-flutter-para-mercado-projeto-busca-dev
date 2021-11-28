@@ -36,6 +36,7 @@ dependencies:
   flutter_modular: any
   mobx: ^2.0.5
   flutter_mobx: ^2.0.2
+  dio: 4.0.4
 
 dev_dependencies:
   flutter_test:
